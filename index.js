@@ -2,7 +2,8 @@ const express = require("express");
 const app = express();
 const port = 8080;
 const Data=require ("./Mock_DATA.json");
-const graphql,{GraphQLSchema,GraphQLInt,GraphQLString,GraphQLObjectType, GraphQLList}=require('graphql')
+const graphql=require('graphql')
+const {GraphQLSchema,GraphQLInt,GraphQLString,GraphQLObjectType, GraphQLList}=graphql;
 const {graphqlHTTP}=require("express-graphql");
 const { query } = require("express");
 app.get("/test", (req, res) => {
@@ -13,9 +14,9 @@ const userType = new GraphQLObjectType({
   name:'user',
   fields:()=>({
     id:{type:GraphQLInt},
-    firstname:{type:GraphQLString},
-    lastname:{type:GraphQLString},
-    emailtname:{type:GraphQLString},
+    firstName:{type:GraphQLString},
+    lastName:{type:GraphQLString},
+    email:{type:GraphQLString},
     password:{type:GraphQLString},
     
   })
@@ -27,22 +28,46 @@ const RootQuery= new GraphQLObjectType({
     getAllUsers:{
       type: new GraphQLList(userType),
       args:{id:{type:GraphQLInt}},
-      resolve:()=>{
+      resolve(parent,args){
         return Data;
       }
     }
   }
 })
-const schema=new GraphQLObjectType( {
+const Mutation=new GraphQLObjectType({
+  name:"mutation",
+  fields:{
+    createUSer:{
+      type:userType,
+      args:{
+        firstName:{type:GraphQLString},
+        lastName:{type:GraphQLString},
+       email:{type:GraphQLString},
+       password:{type:GraphQLString},
+      },
+      resolve(parent,args){
+        Data.push({
+          id:Data.length+1,
+          firstName:args.firstName,
+          lastName:args.lastName,
+          email:args.email,
+          password:args.password,
+        });
+        return args;
+      }
+    }
+  }
+})
+const schema=new GraphQLSchema( {
   query:RootQuery,
   mutation:Mutation
 
-})
+});
+
 app.use('/graphql',graphqlHTTP({
   schema,
-  graphiql:true,
-})
-);
+  graphiql:true
+}));
 
 
 
