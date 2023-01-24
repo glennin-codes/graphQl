@@ -17,4 +17,6 @@ const UserType = new GraphQLObjectType({
     password: { type: GraphQLString },
   }),
 });
-modules.exports = UserType;
+
+module.exports=UserType;
+

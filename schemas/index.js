@@ -12,7 +12,7 @@ const RootQuery= new GraphQLObjectType({
     name:'RootQueryType',
     fields:{
       getAllUsers:{
-        type: new GraphQLList(userType),
+        type: new GraphQLList(UserType),
         args:{id:{type:GraphQLInt}},
         resolve(parent,args){
           return Data;
@@ -44,7 +44,8 @@ const RootQuery= new GraphQLObjectType({
       }
     }
   })
-  modules.exports=new GraphQLSchema( {
+ 
+  module.exports=new GraphQLSchema( {
     query:RootQuery,
     mutation:Mutation
   
