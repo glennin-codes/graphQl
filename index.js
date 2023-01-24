@@ -9,23 +9,27 @@ app.get("/test", (req, res) => {
   res.send("hello there? My new graphql api");
 });
 
-const userType = new GraphQLSchema({
+const userType = new GraphQLObjectType({
   name:'user',
-  fields:()=>{
+  fields:()=>({
     id:{type:GraphQLInt},
     firstname:{type:GraphQLString},
-   name:{type:GraphQLString},
-    firstname:{type:GraphQLString},
-    firstname:{type:GraphQLString},
+    lastname:{type:GraphQLString},
+    emailtname:{type:GraphQLString},
+    password:{type:GraphQLString},
     
-  }
+  })
 
 })
 const RootQuery= new GraphQLObjectType({
-  name:'RootQuery',
+  name:'RootQueryType',
   fields:{
     getAllUsers:{
-      type: new GraphQLList(Data)
+      type: new GraphQLList(userType),
+      args:{id:{type:GraphQLInt}},
+      resolve:()=>{
+        return Data;
+      }
     }
   }
 })
@@ -34,7 +38,7 @@ const schema=new GraphQLObjectType( {
   mutation:Mutation
 
 })
-app.use('/graph',graphqlHTTP({
+app.use('/graphql',graphqlHTTP({
   schema,
   graphiql:true,
 })
